@@ -1,76 +1,83 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-h1{
-    color:white;
-    font-family:cursive;
+ let boxes = document.querySelectorAll(".box");
+let resetBtn = document.querySelector("#resetBtn");
+let newGameBtn = document.querySelector("#new-btn");
+let msgContainer = document.querySelector(".msg-container");
+let msg = document.querySelector("#msg");
 
-}
+let turnO = true; 
+let count = 0; 
 
-body {
-    background-color: #450920;
-    text-align: center;
-}
+const winPatterns = [
+  [0, 1, 2], [0, 3, 6],[0, 4, 8],[1, 4, 7],[2, 5, 8],[2, 4, 6],[3, 4, 5],[6, 7, 8]];
 
-.container {
-    height: 70vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+const resetGame = () => {
+  turnO = true;
+  count = 0;
+  enableBoxes();
+  msgContainer.classList.add("hide");
+};
 
-.game {
-    height: 60vmin;
-    width: 60vmin;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5vmin;
-}
+boxes.forEach((box) => {
+  box.addEventListener("click", () => {
+    if (turnO) {
+      //playerO
+      box.innerText = "O";
+      turnO = false;
+    } else {
+      //playerX
+      box.innerText = "X";
+      turnO = true;
+    }
+    box.disabled = true;
+    count++;
 
-.box {
-    height: 18vmin;
-    width: 18vmin;
-    border-radius: 1rem;
-    border:none;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-  font-size:8vmin ;
+    let isWinner = checkWinner();
 
+    if (count === 9 && !isWinner) {
+      gameDraw();
+    }
+  });
+});
 
-}
-#resetBtn{
-    padding: 1rem;
-    font-size: 1.5rem;
-    border-radius: 1.5rem;
-    border: none;
-    background-color:#fff5e6;
-}
-    #resetBtn:hover {
-    background-color: #ffe0c2;
-}
-#msg{
-    color:#fff5e6;
-    font-size:5vmin;
-}
-.msg-Container{
-    height:15vmin;
+const gameDraw = () => {
+  msg.innerText = `Game is a Draw !.`;
+  msgContainer.classList.remove("hide");
+  disableBoxes();
+};
 
-}
-.hide{
-    display: none;
-}
-#new-btn {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border-radius: 1rem;
-    border: none;
-    background-color: #fff5e6;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background-color 0.2s ease;
-}
-#new-btn:hover {
-    background-color: #ffe0c2;
-}
+const disableBoxes = () => {
+  for (let box of boxes) {
+    box.disabled = true;
+  }
+};
+
+const enableBoxes = () => {
+  for (let box of boxes) {
+    box.disabled = false;
+    box.innerText = "";
+  }
+};
+
+const showWinner = (winner) => {
+  msg.innerText = `Congratulations, Winner is ${winner} !\u{1F389}`;
+  msgContainer.classList.remove("hide");
+  disableBoxes();
+};
+
+const checkWinner = () => {
+  for (let pattern of winPatterns) {
+    let pos1Val = boxes[pattern[0]].innerText;
+    let pos2Val = boxes[pattern[1]].innerText;
+    let pos3Val = boxes[pattern[2]].innerText;
+
+    if (pos1Val != "" && pos2Val != "" && pos3Val != "") {
+      if (pos1Val === pos2Val && pos2Val === pos3Val) {
+        showWinner(pos1Val);
+        return true;
+      }
+    }
+  }
+};
+
+newGameBtn.addEventListener("click", resetGame);
+resetBtn.addEventListener("click", resetGame);
