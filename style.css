@@ -61,3 +61,16 @@ body {
 .hide{
     display: none;
 }
+#new-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 1rem;
+    border: none;
+    background-color: #fff5e6;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+#new-btn:hover {
+    background-color: #ffe0c2;
+}
